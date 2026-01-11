@@ -1,0 +1,74 @@
+import doctorModel from "../models/doctorModel.js";
+import bcrypt from "bcrypt";
+import { v2 as cloudinary } from "cloudinary";
+
+const changeAvailability = async (req, res) => {
+    try {
+        const { docId } = req.body;
+        const docData = await doctorModel.findById(docId);
+        await doctorModel.findByIdAndUpdate(docId, { available: !docData.available });
+        res.json({ success: true, message: 'Availability Changed' });
+    } catch (error) {
+        console.log(error);
+        res.json({ success: false, message: error.message });
+    }
+}
+
+const doctorList = async (req, res) => {
+    try {
+        const doctors = await doctorModel.find({}).select(['-password', '-email']);
+        res.json({ success: true, doctors });
+    } catch (error) {
+        console.log(error);
+        res.json({ success: false, message: error.message });
+    }
+}
+
+// API for admin login (if needed for adding doctors, but for now simple addDoctor)
+// We will assume this is protected by admin middleware or key in routes
+const addDoctor = async (req, res) => {
+    try {
+        const { name, email, password, speciality, degree, experience, about, fees, address } = req.body;
+        const imageFile = req.file;
+
+        if (!name || !email || !password || !speciality || !degree || !experience || !about || !fees || !address) {
+            return res.json({ success: false, message: "Missing Details" });
+        }
+
+        // validate email format
+        // validate strong password (we can add validator here similar to userController)
+
+        // upload image to cloudinary
+        const imageUpload = await cloudinary.uploader.upload(imageFile.path, { resource_type: "image" });
+        const imageUrl = imageUpload.secure_url;
+
+        // hash password
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        const doctorData = {
+            name,
+            email,
+            image: imageUrl,
+            password: hashedPassword,
+            speciality,
+            degree,
+            experience,
+            about,
+            fees,
+            address: JSON.parse(address),
+            date: Date.now()
+        }
+
+        const newDoctor = new doctorModel(doctorData);
+        await newDoctor.save();
+
+        res.json({ success: true, message: "Doctor Added" });
+
+    } catch (error) {
+        console.log(error);
+        res.json({ success: false, message: error.message });
+    }
+}
+
+export { changeAvailability, doctorList, addDoctor };
