@@ -1,11 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { assets } from '../assets/assets.js';
 import { NavLink, useNavigate } from 'react-router-dom';
+import { AppContext } from '../context/AppContext';
 
 export const Navbar = () => {
     const navigate = useNavigate();
     const [showMenu, setShowMenu] = useState(false);
-    const [token, setToken] = useState(true);
+    const { token, setToken, userData } = useContext(AppContext);
+
+    const logout = () => {
+        setToken('');
+        localStorage.removeItem('token');
+    };
 
     return (
         <div className='flex items-center justify-between text-sm py-4 mb-5 border-b border-b-gray-400'>
@@ -31,13 +37,13 @@ export const Navbar = () => {
             <div className='flex gap-4 items-center'>
                 {token ? (
                     <div className='relative group flex items-center gap-3 cursor-pointer'>
-                        <img className='w-10 rounded-full' src={assets.profile_pic} alt='' />
+                        <img className='w-10 rounded-full' src={userData?.image || assets.profile_pic} alt='' />
                         <img className='w-2.5' src={assets.dropdown_icon} alt='' />
                         <div className='absolute top-0 right-0 pt-14 text-base font-medium text-gray-600 z-20 hidden group-hover:block'>
                             <div className='min-w-48 bg-stone-100 rounded flex flex-col gap-4 p-4'>
                                 <p onClick={() => navigate('/myprofile')} className='hover:text-black cursor-pointer'>MyProfile</p>
                                 <p onClick={() => navigate('/myappointment')} className='hover:text-black cursor-pointer'>MyAppointments</p>
-                                <p onClick={() => setToken(false)} className='hover:text-black cursor-pointer'>Logout</p>
+                                <p onClick={logout} className='hover:text-black cursor-pointer'>Logout</p>
                             </div>
                         </div>
                     </div>

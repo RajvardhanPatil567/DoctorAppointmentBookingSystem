@@ -3,13 +3,15 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { AppContext } from '../context/AppContext.jsx';
 import { assets } from '../assets/assets';
 import { RelatedDoctors } from '../Components/RelatedDoctors.jsx';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
 export const Appointment = () => {
   const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
   const { docId } = useParams();
-  const { doctors, currencySymbol } = useContext(AppContext);
+  const { doctors, currencySymbol, backendUrl, token } = useContext(AppContext);
   const navigate = useNavigate();
 
   const [docInfo, setDocInfo] = useState(null);
@@ -54,24 +56,44 @@ export const Appointment = () => {
     setDocSlots(slotsArr);
   };
 
-  const bookAppointment = () => {
-    if (!slotTime) {
-      alert('Please select a time slot');
-      return;
+  const bookAppointment = async () => {
+    if (!token) {
+      toast.warn('Login to book appointment');
+      return navigate('/login');
     }
 
-    // Format the date
-    const selectedDate = docSlots[slotIndex].date;
-    const formattedDate = `${selectedDate.getDate()} ${months[selectedDate.getMonth()]} ${selectedDate.getFullYear()}`;
+    if (!slotTime) {
+      return toast.warn('Please select a time slot');
+    }
 
-    // Navigate to payment page with appointment data
-    navigate('/payment', {
-      state: {
-        docInfo,
-        slotDate: formattedDate,
-        slotTime: slotTime
+    try {
+      const date = docSlots[slotIndex].date;
+      let day = date.getDate();
+      let month = date.getMonth() + 1;
+      let year = date.getFullYear();
+
+      const slotDate = `${day}_${month}_${year}`;
+
+      const { data } = await axios.post(`${backendUrl}/api/user/book-appointment`, {
+        docId,
+        slotDate,
+        slotTime,
+        docData: docInfo  // Send doctor data from frontend
+      }, {
+        headers: { token }
+      });
+
+      if (data.success) {
+        toast.success(data.message);
+
+        navigate('/myappointment');
+      } else {
+        toast.error(data.message);
       }
-    });
+    } catch (error) {
+      console.log(error);
+      toast.error(error.message);
+    }
   };
 
   useEffect(() => {

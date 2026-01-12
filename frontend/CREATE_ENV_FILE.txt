@@ -1,0 +1,30 @@
+URGENT: Create Frontend .env File
+=====================================
+
+You need to create a file named .env in the frontend folder.
+
+STEPS:
+------
+1. Open your file explorer or VS Code
+2. Navigate to: c:\Users\Raj\Desktop\DoctorAppointmentBookingSystem\frontend
+3. Create a NEW file named: .env (just the dot and env, no .example)
+4. Add this EXACT content to the file:
+
+VITE_RAZORPAY_KEY_ID=rzp_test_S2plCPpd0geQEi
+
+5. Save the file
+6. Restart your frontend server:
+   - Press Ctrl+C in the terminal running npm run dev
+   - Run: npm run dev
+
+ALTERNATIVE (Rename existing file):
+------------------------------------
+1. Find the file: frontend\.env.example
+2. Rename it to: .env (remove .example)
+3. Update the content to:
+
+VITE_RAZORPAY_KEY_ID=rzp_test_S2plCPpd0geQEi
+
+4. Save and restart frontend server
+
+After this, the payment should work!

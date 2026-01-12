@@ -8,6 +8,12 @@ const authUser = async (req, res, next) => {
             return res.json({ success: false, message: 'Not Authorized Login Again' });
         }
         const token_decode = jwt.verify(token, process.env.JWT_SECRET);
+
+        // Initialize req.body if it doesn't exist (for GET requests)
+        if (!req.body) {
+            req.body = {};
+        }
+
         req.body.userId = token_decode.id;
         next();
     } catch (error) {
