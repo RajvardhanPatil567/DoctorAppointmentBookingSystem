@@ -9,6 +9,7 @@ import { MyAppointment } from './pages/MyAppointment';
 import { Doctor } from './pages/Doctor';
 import { Navbar } from './Components/Navbar';
 import { Appointment } from './pages/Appointment';
+import { Payment } from './pages/Payment';
 import { Footer } from './Components/Footer';
 
 const App = () => {
@@ -16,17 +17,18 @@ const App = () => {
     <div className='mx-4 sm:mx-[10%]'>
       <Navbar />
       <Routes>
-        <Route path="/" element={<Home/>} />
-        <Route path="/doctors" element={<Doctor/>} />
-         <Route path="/doctors/:speciality" element={<Doctor />} />
-        <Route path="/about" element={<About/>} />
-        <Route path="/contact" element={<Contact/>} />
-        <Route path="/login" element={<Login/>} />
-        <Route path="/myprofile" element={<Myprofile/>} />
-        <Route path="/myappointment" element={<MyAppointment/>} />  
-       <Route path="/appointment/:docId" element={<Appointment />} /> {/* ✅ Fixed */}
+        <Route path="/" element={<Home />} />
+        <Route path="/doctors" element={<Doctor />} />
+        <Route path="/doctors/:speciality" element={<Doctor />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/myprofile" element={<Myprofile />} />
+        <Route path="/myappointment" element={<MyAppointment />} />
+        <Route path="/appointment/:docId" element={<Appointment />} />
+        <Route path="/payment" element={<Payment />} />
       </Routes>
-      <Footer/>
+      <Footer />
 
     </div>
   );

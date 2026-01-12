@@ -1,13 +1,17 @@
 import React, { useEffect, useContext, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { AppContext } from '../context/AppContext.jsx';
 import { assets } from '../assets/assets';
 import { RelatedDoctors } from '../Components/RelatedDoctors.jsx';
 
 export const Appointment = () => {
   const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
   const { docId } = useParams();
   const { doctors, currencySymbol } = useContext(AppContext);
+  const navigate = useNavigate();
+
   const [docInfo, setDocInfo] = useState(null);
   const [docSlots, setDocSlots] = useState([]);
   const [slotIndex, setSlotIndex] = useState(0);
@@ -48,6 +52,26 @@ export const Appointment = () => {
       slotsArr.push({ date: new Date(today.getFullYear(), today.getMonth(), today.getDate() + i), slots: timeSlots });
     }
     setDocSlots(slotsArr);
+  };
+
+  const bookAppointment = () => {
+    if (!slotTime) {
+      alert('Please select a time slot');
+      return;
+    }
+
+    // Format the date
+    const selectedDate = docSlots[slotIndex].date;
+    const formattedDate = `${selectedDate.getDate()} ${months[selectedDate.getMonth()]} ${selectedDate.getFullYear()}`;
+
+    // Navigate to payment page with appointment data
+    navigate('/payment', {
+      state: {
+        docInfo,
+        slotDate: formattedDate,
+        slotTime: slotTime
+      }
+    });
   };
 
   useEffect(() => {
@@ -107,13 +131,13 @@ export const Appointment = () => {
 
         <div className='flex items-center gap-3 w-full overflow-x-scroll mt-4 pb-4'>
           {docSlots.length > 0 && docSlots[slotIndex].slots.map((item, index) => (
-            <p onClick={()=>setSlotTime(item.time)} className={`text-sm font-light flex-shrink-0 px-5 py-2 rounded-full cursor-pointer ${item.time === slotTime ? 'bg-primary text-white' :'text-gray-400 border border-gray-300'}`} key={index}>{item.time.toLowerCase()}</p>
+            <p onClick={() => setSlotTime(item.time)} className={`text-sm font-light flex-shrink-0 px-5 py-2 rounded-full cursor-pointer ${item.time === slotTime ? 'bg-primary text-white' : 'text-gray-400 border border-gray-300'}`} key={index}>{item.time.toLowerCase()}</p>
           ))}
         </div>
-        <button className='bg-primary text-white text-sm font-light px-14 py-3 rounded-full' >Book An Appointment</button>
+        <button onClick={bookAppointment} className='bg-primary text-white text-sm font-light px-14 py-3 rounded-full' >Book An Appointment</button>
       </div>
       {/* {Lisyting Related Doctors} */}
-      <RelatedDoctors docId={docId} speciality={docInfo.speciality}/>
+      <RelatedDoctors docId={docId} speciality={docInfo.speciality} />
     </div>
   );
 };
