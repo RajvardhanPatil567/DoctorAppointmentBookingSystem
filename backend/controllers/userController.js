@@ -194,14 +194,21 @@ const cancelAppointment = async (req, res) => {
 
         await appointmentModel.findByIdAndUpdate(appointmentId, { cancelled: true });
 
-        // releasing doctor slot
+        // releasing doctor slot (only if doctor exists in database)
         const { docId, slotDate, slotTime } = appointmentData;
-        const docData = await doctorModel.findById(docId);
-        let slots_booked = docData.slots_booked;
 
-        slots_booked[slotDate] = slots_booked[slotDate].filter(e => e !== slotTime);
-
-        await doctorModel.findByIdAndUpdate(docId, { slots_booked });
+        try {
+            // Try to update doctor slots if doctor is in database
+            const docData = await doctorModel.findById(docId);
+            if (docData && docData.slots_booked) {
+                let slots_booked = docData.slots_booked;
+                slots_booked[slotDate] = slots_booked[slotDate].filter(e => e !== slotTime);
+                await doctorModel.findByIdAndUpdate(docId, { slots_booked });
+            }
+        } catch (err) {
+            // If doctor is from assets (not in database), skip slot update
+            console.log('Doctor not in database, skipping slot update');
+        }
 
         res.json({ success: true, message: 'Appointment Cancelled' });
 
