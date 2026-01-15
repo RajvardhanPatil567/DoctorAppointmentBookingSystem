@@ -10,6 +10,8 @@ import { Doctor } from './pages/Doctor';
 import { Navbar } from './Components/Navbar';
 import { Appointment } from './pages/Appointment';
 import { Payment } from './pages/Payment';
+import DoctorLogin from './pages/DoctorLogin';
+import DoctorDashboard from './pages/DoctorDashboard';
 import { Footer } from './Components/Footer';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -30,10 +32,12 @@ const App = () => {
         <Route path="/myappointment" element={<MyAppointment />} />
         <Route path="/appointment/:docId" element={<Appointment />} />
         <Route path="/payment" element={<Payment />} />
+        <Route path="/doctor-login" element={<DoctorLogin />} />
+        <Route path="/doctor-dashboard" element={<DoctorDashboard />} />
       </Routes>
       <Footer />
 
-    </div>
+    </div >
   );
 };
 
