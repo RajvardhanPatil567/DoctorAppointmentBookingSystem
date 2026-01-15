@@ -4,7 +4,7 @@ import { Home } from './pages/Home';
 import { About } from './pages/About';
 import { Contact } from './pages/Contact';
 import { Login } from './pages/Login';
-import { Myprofile } from './pages/Myprofile';
+import { Myprofile } from './pages/MyProfile';
 import { MyAppointment } from './pages/MyAppointment';
 import { Doctor } from './pages/Doctor';
 import { Navbar } from './Components/Navbar';
