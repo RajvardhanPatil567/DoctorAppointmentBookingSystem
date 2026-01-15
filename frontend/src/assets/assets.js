@@ -36,7 +36,7 @@ import General_physician from './General_physician.svg'
 import Gynecologist from './Gynecologist.svg'
 import Neurologist from './Neurologist.svg'
 import Pediatricians from './Pediatricians.svg'
-
+export const url = 'https://doctorappointmentbookingsystem-o3l3.onrender.com'
 
 export const assets = {
     appointment_img,
