@@ -1,10 +1,12 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { assets } from '../assets/assets'
-
 import { useNavigate } from 'react-router-dom'
+import { AppContext } from '../context/AppContext'
 
 export const Banner = () => {
    const navigate = useNavigate()
+   const { token } = useContext(AppContext)
+
    return (
       <div className='flex bg-primary rounded-lg px-6 sm:px-10 md:px-14 lg:px-12 my-20 md:mx-10'>
          {/* Left Side */}
@@ -13,7 +15,14 @@ export const Banner = () => {
                <p>Book Appointment</p>
                <p className='mt-4'>Your Health is Our Priority</p>
             </div>
-            <button onClick={() => { navigate('/login'); scrollTo(0, 0) }} className='bg-white text-sm sm:text-base text-gray-600 px-8 py-3 rounded-full mt-6 hover:scale-105 transition-all'>Book Appointment</button>
+            <button onClick={() => {
+               if (token) {
+                  navigate('/doctors')
+               } else {
+                  navigate('/login')
+               }
+               scrollTo(0, 0)
+            }} className='bg-white text-sm sm:text-base text-gray-600 px-8 py-3 rounded-full mt-6 hover:scale-105 transition-all'>Book Appointment</button>
          </div>
          {/* Right Side */}
          <div className='hidden md:block md:w-1/2 lg:w-1/2 lg:w-[370px] relative'>

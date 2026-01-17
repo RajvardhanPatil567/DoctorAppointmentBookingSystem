@@ -46,7 +46,7 @@ export const Login = () => {
 
   // Redirect if already logged in
   if (token) {
-    navigate('/');
+    navigate('/doctors');
   }
 
   return (
